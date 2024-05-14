@@ -6,4 +6,3 @@ Cross Attention mechanism for 3D tensors in pytorch for DL models which can be u
 Intial apply tranformer attento to each input to calc quer, key, value foolwed by torch matmul applied to tensor1 + attention calculated from tensor2
 
 
-Any 
