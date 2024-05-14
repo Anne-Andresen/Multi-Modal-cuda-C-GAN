@@ -9,6 +9,6 @@ Intial apply tranformer attento to each input to calc quer, key, value foolwed b
 Inlcuded C/cuda and C++ versions of the cross attention transformer as weel as python example of how this can be incoporated into a basic GAN generator if u have multiple inputs
 
 TODO:
-
+In C and C++
 - Reader
-- Rest of GAN
+- GAN 
