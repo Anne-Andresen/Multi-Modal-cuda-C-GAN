@@ -1,5 +1,5 @@
 # Cross-Attention-mechanism-3D-images
-
+I am aware that the current organization of the repository is a MESS
 
 Cross Attention mechanism for 3D tensors in pytorch for DL models which can be used as input to CNN layers and so forth. Here Cross attention or merging two seperate input tensors, and gives same output size.
 
