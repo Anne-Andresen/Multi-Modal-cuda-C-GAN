@@ -14,10 +14,10 @@ BatchNorm* batch_norm_init(int size) {
 }
 
 void batch_norm_free(BatchNorm* bn) {
-    free(bn->gamma);
-    free(bn->beta);
-    free(bn->running_mean);
-    free(bn->running_var);
+    free(gamma);
+    free(beta);
+    free(running_mean);
+    free(running_var);
     free(bn);
 }
 
