@@ -11,4 +11,4 @@ Inlcuded C/cuda and C++ versions of the cross attention transformer as weel as p
 TODO:
 In C and C++
 - Reader
-- GAN 
+- GAN training and code iteration
