@@ -12,3 +12,4 @@ TODO:
 In C and C++
 - Reader
 - GAN training and code iteration
+- Update read me
