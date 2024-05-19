@@ -13,3 +13,4 @@ In C and C++
 - Reader
 - GAN training and code iteration
 - Update read me
+- Nested for loop --> arithmetic operations save memory
