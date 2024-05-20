@@ -1,12 +1,19 @@
-# Cross-Attention-mechanism-3D-images
-I am aware that the current organization of the repository is a MESS
-
-Cross Attention mechanism for 3D tensors in pytorch for DL models which can be used as input to CNN layers and so forth. Here Cross attention or merging two seperate input tensors, and gives same output size.
-
-Intial apply tranformer attento to each input to calc quer, key, value foolwed by torch matmul applied to tensor1 + attention calculated from tensor2
+# Pure C implmetation of Hybrd GAN containg cross-attention, self-attention and convolution blocks in generator. 
 
 
-Inlcuded C/cuda and C++ versions of the cross attention transformer as weel as python example of how this can be incoporated into a basic GAN generator if u have multiple inputs
+Cross Attention mechanism for 3D tensors in pytorch for DL models  can be used as input to CNN layers and so forth. Here Cross attention or merging two seperate input tensors, and gives same output size allowing to either give multiple input images or introduce new data along the way in the network. This is implemented in python, C and C++.
+
+
+For attention and convolution has also been implmented in C and python. 
+
+
+GAN has been implemented in C and python. 
+
+**Currently building the training script in C as well as the many dependencies which are usually found in pytorch library from scratch. **
+
+
+
+
 
 TODO:
 In C and C++
