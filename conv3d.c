@@ -53,3 +53,7 @@ void* conv3d_forward(Conv3D* conv, float* input) {
                                         int i_d = o_d * conv->stride + k_d - conv->padding;
                                         int i_h = o_h * conv->stride + k_h - conv->padding;
                                         int i_w = o_w * conv->stride + k_w - conv->padding
+
+
+
+/*To many nested loops convert ot arithmetic operations on a 1d array lot easier on the GPU */

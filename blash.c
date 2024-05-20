@@ -13,3 +13,4 @@ void gemm(float alpha, int m, int n, int k, float beta, float* a, int lda, float
         }
     }
 }
+/*Redo to  arithmetic operations */
