@@ -1,4 +1,4 @@
-# Hybrid 3D GAN Implementation
+# Hybrid 3D GAN C and C++ Implementation
 
 ## Overview
 
