@@ -61,7 +61,7 @@ python src/hybrid_gan.py
 ## Contributing
 
 
-We welcome contributions to enhance the project. Please feel free to submit pull requests or open issues with suggestions and improvements.
+Contributions are welcome. Please feel free to submit pull requests or open issues with suggestions and improvements.
 
 ## License
 
