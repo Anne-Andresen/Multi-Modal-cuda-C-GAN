@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains a pure C implementation of a 3D Hybrid GAN, which integrates cross-attention, self-attention, and convolutional blocks in the generator. The self-attention, convolutional layers, and GAN structure, including a UNet architecture within the generator, are implemented in both C and Python.
+This repository contains a pure C implementation of a 3D  deep learning model specidically a Hybrid GAN, with cross-attention, self-attention, and convolutional blocks in the generator. The self-attention, convolutional layers, and GAN structure, including a UNet architecture within the generator, are implemented in both C and Python.
 
 ## Features
 
