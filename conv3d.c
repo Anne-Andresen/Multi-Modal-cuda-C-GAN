@@ -1,5 +1,20 @@
-#include "conv3d.h"
-#include "blas.h"
+#ifndef CONV3D_H
+#define CONV3D_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+typedef struct {
+    int in_channels;
+    int out_channels;
+    int kernel_size;
+    int stride;
+    int padding;
+    int bias;
+    float* weights;
+    float* bias_term;
+} Conv3D;
 
 Conv3D* conv3d_init(int in_channels, int out_channels, int kernel_size, int stride, int padding, int bias) {
     Conv3D* conv = (Conv3D*)malloc(sizeof(Conv3D));
@@ -13,6 +28,20 @@ Conv3D* conv3d_init(int in_channels, int out_channels, int kernel_size, int stri
     conv->weights = (float*)malloc(sizeof(float) * out_channels * in_channels * kernel_size * kernel_size * kernel_size);
     if (bias) {
         conv->bias_term = (float*)malloc(sizeof(float) * out_channels);
+    }
+
+    // Xavier initialization of weights
+    if (bias) {
+        for (int i = 0; i < out_channels * in_channels * kernel_size * kernel_size * kernel_size; i++) {
+            conv->weights[i] = (float) rand() / RAND_MAX * 2 * sqrt(6.0 / (in_channels * kernel_size * kernel_size * kernel_size + out_channels));
+        }
+        for (int i = 0; i < out_channels; i++) {
+            conv->bias_term[i] = 0;
+        }
+    } else {
+        for (int i = 0; i < out_channels * in_channels * kernel_size * kernel_size * kernel_size; i++) {
+            conv->weights[i] = (float) rand() / RAND_MAX * 2 * sqrt(6.0 / (in_channels * kernel_size * kernel_size * kernel_size));
+        }
     }
 
     return conv;
@@ -48,12 +77,3 @@ void* conv3d_forward(Conv3D* conv, float* input) {
                         float sum = 0;
                         for (int i_c = 0; i_c < in_channels; i_c++) {
                             for (int k_d = 0; k_d < conv->kernel_size; k_d++) {
-                                for (int k_h = 0; k_h < conv->kernel_size; k_h++) {
-                                    for (int k_w = 0; k_w < conv->kernel_size; k_w++) {
-                                        int i_d = o_d * conv->stride + k_d - conv->padding;
-                                        int i_h = o_h * conv->stride + k_h - conv->padding;
-                                        int i_w = o_w * conv->stride + k_w - conv->padding
-
-
-
-/*To many nested loops convert ot arithmetic operations on a 1d array lot easier on the GPU */
