@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <tensorflow/c/tf_c.h>
-
+#include <string_encoding.h>
 // Hypothetical deep learning library for C
-#include "dlc.h"
+#include "unet3d.h"
 
 // Define the GAN model
 DLC_Model G, D, GAN;
@@ -20,7 +20,8 @@ void train(DLC_Model *G, DLC_Model *D, DLC_Loss criterion, DLC_Optimizer optimiz
         for (int i = 0; i < dataloader_size; i++) {
             DLTensor real_data, real_labels, real_struct, merged_tensor;
             // Load real_data, real_labels, and real_struct from the dataloader
-
+            string_encode = encode_string('', '');
+            
             // Move the data to the device
             DLTensorMove(&real_data, device);
             DLTensorMove(&real_labels, device);
