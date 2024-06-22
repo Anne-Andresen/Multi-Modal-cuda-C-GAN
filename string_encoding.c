@@ -94,4 +94,7 @@ int main() {
         printf("%d ", result.data[i]);
     }
     return 0;
-}s
+}
+
+
+/* Very simple modify to a custom weighted version of CLIP */
