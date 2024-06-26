@@ -1,3 +1,5 @@
+
+/*
 #ifndef CONV3D_H
 #define CONV3D_H
 
@@ -77,3 +79,27 @@ void* conv3d_forward(Conv3D* conv, float* input) {
                         float sum = 0;
                         for (int i_c = 0; i_c < in_channels; i_c++) {
                             for (int k_d = 0; k_d < conv->kernel_size; k_d++) {
+
+
+*/
+
+#include <conv3d.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+__global__ void conv3d_kernel(const float* input, const float* kernel, float* output, int D, int H, int W, int k1, int k2, int k3){
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int z = blockIdx.z * blockDim.z + threadIdx.z;
+
+    int pad_D = k1 / 2;
+    int pad_H = k2 / 2;
+    int pad_W = k3 / 2;
+
+    if (x >= W || y >= H || z >= D) return;
+
+    float sum = 0.0f;
+
+    
+}
