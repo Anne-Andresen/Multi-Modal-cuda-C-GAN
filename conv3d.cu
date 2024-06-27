@@ -101,5 +101,22 @@ __global__ void conv3d_kernel(const float* input, const float* kernel, float* ou
 
     float sum = 0.0f;
 
-    
+    for (int K1 = 0; K1 < k1; K1++) {
+        for (int K2 = 0; K2 < k2; K2++) {
+            for (int K3=0; K3 < k3; K3++) {
+                int inZ = z + K1 - pad_D;
+                int inY = y + K2 - pad_H;
+                int inX = x + K3 - pad_W;
+
+                if (inZ >= 0 && inZ < D && inY >= 0 && inY < H && inX >=0 && inX < W) {
+                    sum += input[inZ * H * W + inY * W + inX] * kernel[K1 * k3 * k2 + K2 * k3 + K3];
+
+                }
+            }
+        }
+    }
+    output[z * H * W  + y * W + x] = sum;
+
 }
+
+void conv3d_init(Conv3D* conv, )
