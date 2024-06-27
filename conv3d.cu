@@ -155,4 +155,14 @@ void conv3d_execute(Conv3D* conv, float* outputData) {
     dim3 gridSize((conv->W + blockSize.x - 1) / blockSize.x, (conv->H + blockSize.y - 1) / blockSize.y, (conv->D + blockSize.z - 1) / blockSize.z);
 
     conv3d_kernel<<<gridSize, blockSize>>>(conv->device_input, conv->device_kernel, conv->device_output, conv->D, conv->H, conv->W, conv->k1, conv->);
+    cudaDeviceSynchronize();
+
+    size_t outputSize = conv->D * conv ->H * conv->W * sizeof(float);
+    cudaMemcpy(outputData, conv-device_output, outputSize, cudaMemcpyDevicetoHost);
+}
+
+void conv3d_free(Conv3D* conv) {
+    cudaFree(conv->device_input);
+    cudaFree(conv->device_kernel);
+    cudaFree(conv->device_output;)
 }
