@@ -119,4 +119,34 @@ __global__ void conv3d_kernel(const float* input, const float* kernel, float* ou
 
 }
 
-void conv3d_init(Conv3D* conv, )
+void conv3d_init(Conv3D* conv, int inputDepth, int inputHeight, int inputWidth, int kernelDepth, int kernelHeight, int kernelWidth) {
+    conv->D = inputDepth;
+    conv->H = inputHeight;
+    conv->W = inputWidth;
+
+    conv->k1 = kernelDepth;
+    conv->k2 = kernelHeight;
+    conv->k3 = kernelWidth;
+
+    size_t inputSize = conv->D * conv->H * conv->W * sizeof(float);
+    size_t kernelSize = conv->k1 * conv->k2 * conv->k3 * sizeof(float);
+    size_t outputSize = conv->D * conv->H * conv->W * sizeof(float);
+
+    cudaMalloc(&conv->device_input, inputSize);
+    cudaMalloc(&conv->device_kernel, kernelSize);
+    cudaMalloc(&conv->device_output, outputSize);
+
+}
+
+
+void conv3d_set_input(Conv3D* conv, const float* inputData) {
+    size_t inputSize = conv->D * conv->H * conv->W *sizeof(float);
+    cudaMemcpy(conv->device_input, inputData, inputSize, cudaMemcpyHostToDevice);
+}
+
+
+void conv3d_set_kernel(Conv3D* conv, const float* kernelData) {
+    size_t kernelData = conv->k1 * conv->k2 * conv->k3 * sizeof(float);
+    cudaMemcpy(conv->device_kernel, kernelData, kernelSize, cudaMemcpyHostToDevice);
+}
+
