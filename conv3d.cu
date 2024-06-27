@@ -150,3 +150,9 @@ void conv3d_set_kernel(Conv3D* conv, const float* kernelData) {
     cudaMemcpy(conv->device_kernel, kernelData, kernelSize, cudaMemcpyHostToDevice);
 }
 
+void conv3d_execute(Conv3D* conv, float* outputData) {
+    dim3 blockSize(8, 8, 8);
+    dim3 gridSize((conv->W + blockSize.x - 1) / blockSize.x, (conv->H + blockSize.y - 1) / blockSize.y, (conv->D + blockSize.z - 1) / blockSize.z);
+
+    conv3d_kernel<<<gridSize, blockSize>>>(conv->device_input, conv->device_kernel, conv->device_output, conv->D, conv->H, conv->W, conv->k1, conv->);
+}
