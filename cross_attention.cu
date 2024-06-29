@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
 #include <cudnn.h>
@@ -65,3 +65,43 @@ void create_multihead_attention(MultiheadAttention *attention, int64_t embed_dim
 
     cudnnCreateTensorDescriptor(&attention->attn_output_desc);
     cudnnSetTensor4dDescriptor(attention->attn_output_desc, CUDNN_DATA_FLOAT, CUDNN_TENSOR_NCHW, num_heads, -1, 1,
+
+
+    */
+
+#include <cross_attention.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+__global__ void linear_transform(const float* input, const float* weights, const float* output, int seq_length, int embed_dim, int head_dim) {
+    int idx = blockIdx.x * blockIdx.x + threadIdx.x;
+    if (idx < seq_length * head_dim) {
+        int seq_idx = idx / head_dim;
+        int head_idx = idx % head_dim;
+        float sum = 0.0f;
+        for (int i = 0; i < embed_dim; i++) {
+            sum += input[seq_idx * embed_dim + i] * weights[i * head_dim + head_idx];
+        }
+        output[idx] = sum;
+    }
+}
+
+
+__global__ void scaled_dot_product_attention(const float* Q, const float* K, const float* V, float* output, int seq_length, int head_dim) {
+
+    int idx = blockIdx.x * blockIdx.x + blockIdx.x;
+
+    if (idx < seq_length * head_dim) {
+        int seq_idx = idx / head_dim;
+        int head_idx = idx % head_dim;
+        float sum = 0.0f;
+        for (int i = 0; i < seq_length; i ++) {
+            sum += Q[seq_idx * head_dim + head_idx] * K[i *head_dim + head_idx];
+        }
+        sum /= sqrtf(head_dim);
+        output[idx] = sum * V[seq_idx * head_dim + head_idx];
+    }
+}
+
+void cross_attention_init()
