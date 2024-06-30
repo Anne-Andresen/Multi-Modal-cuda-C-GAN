@@ -104,4 +104,60 @@ __global__ void scaled_dot_product_attention(const float* Q, const float* K, con
     }
 }
 
-void cross_attention_init()
+void cross_attention_init(CrossAttention* attn, int embed_dim, int num_heads, int batch_size, int D, int H, int W) {
+    attn->embed_dim = embed_dim;
+    attn->num_heads = num_heads;
+    attn->head_dim = head_dim;
+
+    size_t tensor_size = batch_size *  D * H * W * embed_dim * sizeof(float);
+    size_t weight_size = embed_dim * attn->head_dim * sizeof(float);
+
+    cudaMalloc(&attn->d_queries, tensor_size);
+    cudaMalloc(&attn->d_keys, tensor_size);
+    cudaMalloc(&attn->d_values, tensor_size);
+    cudaMalloc(&attn->d_output, tensor_size);
+
+    cudaMalloc(&attn->d_Wq, weight_size);
+    cudaMalloc(&attn->d_Wk, weight_size);
+    cudaMalloc(&attn->d_Wv, weight_size);
+
+}
+
+void cross_attention_set_input(CrossAttention* attn, const float* queries, const float* keys, const float* values) {
+    size_t tensor_size = sizeof(float) * attn->embed_dim * attn->head_dim;
+    cudaMemcpy(attn->d_queries, queries, tensor_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(attn->d_keys, keys, tensor_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(attn->d_values, values, tensor_size, cudaMemcpyHostToDevice);
+}
+
+
+void cross_attention_forward(CrossAttention* attn) {
+    int seq_length = attn->embed_dim;
+    int batch_size = 1;
+
+    linear_transform<<<1, seq_length * attn->head_dim>>>(attn->d_queries, attn->d_Wq, attn->d_queries, seq_length, attn->embed_dim, attn->head_dim);
+    linear_transform<<<1, seq_length * attn->head_dim>>>(attn->d_keys, attn->d_Wk, attn->d_keys, seq_length, attn->embed_dim, attn->head_dim);
+    linear_transform<<<1, seq_length * attn->head_dim>>>(attn->d_values, attn->d_Wv, attn->d_values, seq_length, attn->embed_dim, attn->head_dim);
+    
+    scaled_dot_product_attention<<<1, seq_length * attn->head_dim>>>(attn->d_queries, attn->d_keys, attn->values, attn->d_output, seq_length, attn->head_dim);
+
+    linear_transform<<<1, seq_length * attn->head_dim>>>(attn->d_output, attn->d_Wo, attn->d_output, seq_length, attn->embed_dim, attn->head_dim);
+
+}
+
+
+void cross_attention_get_output(CrossAttention* attn, float* output) {
+    size_t tensor_size = sizeof(float) * attn->embed_dim * attn->head_dim;
+    cudaMemcpy(output, attn->d_output, tensor_size, cudaMemcpyDeviceToHost);
+}
+
+void cross_attention_free(CrossAttention* attn) {
+    cudaFree(attn->d_queries);
+    cudaFree(attn->d_keys);
+    cudaFree(attn->d_values);
+    cudaFree(attn->d_output);
+    cudaFree(attn->d_Wq);
+    cudaFree(attn->d_Wk);
+    cudaFree(attn->d_Wv);
+    cudaFree(attn->d_Wo);
+}
