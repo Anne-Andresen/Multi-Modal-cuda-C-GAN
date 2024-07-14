@@ -1,6 +1,6 @@
 include <stdio.h>
 #include <cuda_runtime.h>
-#include "multihead_attention.h"
+#include "MH_attention.h"
 
 int main() {
     // Define the dimensions and batch size
