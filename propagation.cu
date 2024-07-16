@@ -155,4 +155,36 @@ int main() {
     cudaMalloc((void**)&d_m, KERNEL_SIZE * KERNEL_SIZE * KERNEL_SIZE * INPUT_DEPTH * OUTPUT_DEPTH * sizeof(float));
     cudaMalloc((void**)&d_v, KERNEL_SIZE * KERNEL_SIZE * KERNEL_SIZE * INPUT_DEPTH * OUTPUT_DEPTH * sizeof(float));
 
-    cudaMemcpy(d_input,
+    cudaMemcpy(d_input, input, INPUT_DEPTH * INPUT_HEIGHT * INPUT_WIDTH * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_weights, weights, KERNEL_SIZE * KERNEL_SIZE * KERNEL_SIZE * INPUT_DEPTH * OUTPUT_DEPTH * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_target, target, OUTPUT_DEPTH * INPUT_HEIGHT * INPUT_WIDTH * sizeof(float), cudaMemcpyHostToDevice);
+
+    int epochs = 1000;
+    for (int t = 1; t <= epochs; t++) {
+        forward_kernel<<<1, OUTPUT_DEPTH>>>(d_input, d_weights, d_output);
+        cudaDeviceSynchronize();
+        cudaMemcpy(output, d_output, OUTPUT_DEPTH * INPUT_HEIGHT * INPUT_WIDTH * sizeof(float), cudaMemcpyDeviceToHost);
+
+        backward_kernel<<<1, OUTPUT_DEPTH>>>(d_input, d_weights, d_output, d_target, d_dW);
+        cudaDeviceSynchronize();
+
+        update_weights_kernel<<<1, KERNEL_SIZE * KERNEL_SIZE * KERNEL_SIZE * INPUT_DEPTH * OUTPUT_DEPTH>>>(d_weights, d_dW, d_m, d_v, t);
+        cudaDeviceSynchronize();
+
+        if (t % 100 == 0) {
+            printf("Epoch %d: Output: %f %f\n", t, output[0][0][0], output[0][0][1]);
+        }
+    }
+
+    cudaMemcpy(weights, d_weights, KERNEL_SIZE * KERNEL_SIZE * KERNEL_SIZE * INPUT_DEPTH * OUTPUT_DEPTH * sizeof(float), cudaMemcpyDeviceToHost);
+
+    cudaFree(d_input);
+    cudaFree(d_weights);
+    cudaFree(d_output);
+    cudaFree(d_target);
+    cudaFree(d_dW);
+    cudaFree(d_m);
+    cudaFree(d_v);
+
+    return 0;
+}
