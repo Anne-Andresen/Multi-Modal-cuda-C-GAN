@@ -166,3 +166,11 @@ void conv3d_free(Conv3D* conv) {
     cudaFree(conv->device_kernel);
     cudaFree(conv->device_output;)
 }
+
+extern "C" void launch_conv3d_kernle(const float* d_input, const float* d_kernel, float* output, int D, int H, int W, int k1, int k2, int k3) {
+    dim3 blockSize(8, 8, 8);
+    dim3 gridSize((W + blockSize.x -1) / blockSize.x, (H + blockSize.y - 1) / blockSize.y, (D + blockSize.z - 1) / blockSize.z);
+
+    conv3d_kernel<<<gridSize, blockSize>>>(d_input, d_kernel, d_output, D, H, W, k1, k2, k3);
+    cudaDeviceSynchronize();
+}

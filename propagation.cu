@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <cuda_runtime.h>
-#include "propagation.h"
-
+#include <propagation.h>
+#include <conv3d.cu>
+#include <conv3d.h>
 /* reg array
 void forward(float input[INPUT_SIZE], float weights[INPUT_SIZE][OUTPUT_SIZE], float output[OUTPUT_SIZE]) {
     for (int i = 0; i < OUTPUT_SIZE; i ++) {
