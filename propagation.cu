@@ -50,7 +50,7 @@ void update_weights(float weights[INPUT_SIZE][OUTPUT_SIZE], float dW[INPUT_SIZE]
     }
 
 }
-*/
+
 
 // Forward propagation
 void forward(float input[INPUT_DEPTH][INPUT_HEIGHT][INPUT_WIDTH], float weights[KERNEL_SIZE][KERNEL_SIZE][KERNEL_SIZE][INPUT_DEPTH][OUTPUT_DEPTH], float output[OUTPUT_DEPTH][INPUT_HEIGHT][INPUT_WIDTH]) {
@@ -87,7 +87,7 @@ void update_weights(float weights[KERNEL_SIZE][KERNEL_SIZE][KERNEL_SIZE][INPUT_D
         }
     }
 }
-/*CUDA KERNELS*/
+
 
 
 __global__ void forward_kernel(float *input, float *weights, float *output) {
@@ -188,4 +188,4 @@ int main() {
     cudaFree(d_v);
 
     return 0;
-}
+} */
