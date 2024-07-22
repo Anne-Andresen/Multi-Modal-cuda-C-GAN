@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to the Multi-Modal-Cuda-C-GAN repository! This project features a cutting-edge 3D deep learning model implemented in CUDA/C, specifically a Hybrid GAN that integrates cross-attention, self-attention, and convolutional blocks within the generator. The model leverages C for high-performance and scalable deep learning solutions.
+Welcome to the Multi-Modal-Cuda-C-GAN repository! This project on a 3D deep learning model implemented in CUDA/C, specifically a Hybrid GAN that integrates cross-attention, self-attention, and convolutional blocks within the generator. The model leverages C for high-performance and scalable deep learning solutions.
 
 ## Features
 
@@ -17,7 +17,7 @@ We are actively developing the training script in C, recreating many dependencie
 
 ## To-Do List
 
-- Implement GAN training and code iteration in C and C++.
+- Implement GAN training and code iteration in C.
 - Update the README with detailed setup instructions and usage examples.
 - Optimize nested for loops and arithmetic operations for memory efficiency.
 
