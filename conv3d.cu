@@ -81,7 +81,7 @@ void* conv3d_forward(Conv3D* conv, float* input) {
                             for (int k_d = 0; k_d < conv->kernel_size; k_d++) {
 
 
-*/
+
 
 #include <conv3d.h>
 #include <stdlib.h>
@@ -173,4 +173,80 @@ extern "C" void launch_conv3d_kerneæ(const float* d_input, const float* d_kerne
 
     conv3d_kernel<<<gridSize, blockSize>>>(d_input, d_kernel, d_output, D, H, W, k1, k2, k3);
     cudaDeviceSynchronize();
+}
+*/
+
+
+#include "conv3d.h"
+#include <cuda_runtime.h>
+#include <stdio.h>
+
+__global__ void conv3d_kernel(float* input, float* weights, float* biases, float* output, int D, int H, int W, int kD, int kH, int kW) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int z = blockIdx.z * blockDim.z + threadIdx.z;
+
+    if (x < W && y < H && z < D) {
+        float value = biases[0]; // Assuming a single bias value for simplicity
+        for (int kd = 0; kd < kD; kd++) {
+            for (int kh = 0; kh < kH; kh++) {
+                for (int kw = 0; kw < kW; kw++) {
+                    int in_d = z - kd + kD / 2;
+                    int in_h = y - kh + kH / 2;
+                    int in_w = x - kw + kW / 2;
+                    if (in_d >= 0 && in_d < D && in_h >= 0 && in_h < H && in_w >= 0 && in_w < W) {
+                        value += input[(in_d * H + in_h) * W + in_w] * weights[(kd * kH + kh) * kW + kw];
+                    }
+                }
+            }
+        }
+        output[(z * H + y) * W + x] = value;
+    }
+}
+
+void conv3d_init(Conv3D* conv, int inputDepth, int inputHeight, int inputWidth, int kernelD, int kernelH, int kernelW) {
+    conv->D = inputDepth;
+    conv->H = inputHeight;
+    conv->W = inputWidth;
+    conv->kernelD = kernelD;
+    conv->kernelH = kernelH;
+    conv->kernelW = kernelW;
+    conv->weights = (float*)malloc(kernelD * kernelH * kernelW * sizeof(float));
+    conv->biases = (float*)malloc(sizeof(float));
+    conv->grad_weights = (float*)malloc(kernelD * kernelH * kernelW * sizeof(float));
+    conv->grad_biases = (float*)malloc(sizeof(float));
+    // Initialize weights and biases
+    for (int i = 0; i < kernelD * kernelH * kernelW; i++) {
+        conv->weights[i] = (float)rand() / RAND_MAX;
+    }
+    conv->biases[0] = (float)rand() / RAND_MAX;
+}
+
+void conv3d_set_input(Conv3D* conv, float* input) {
+    conv->input = input;
+}
+
+void conv3d_execute(Conv3D* conv, float* output) {
+    conv->output = output;
+    dim3 blockDim(8, 8, 8);
+    dim3 gridDim((conv->W + blockDim.x - 1) / blockDim.x, (conv->H + blockDim.y - 1) / blockDim.y, (conv->D + blockDim.z - 1) / blockDim.z);
+    conv3d_kernel<<<gridDim, blockDim>>>(conv->input, conv->weights, conv->biases, conv->output, conv->D, conv->H, conv->W, conv->kernelD, conv->kernelH, conv->kernelW);
+}
+
+void conv3d_backprop(Conv3D* conv, float* grad_output, float* grad_input) {
+    // Implement backpropagation for convolution
+}
+
+void conv3d_update_weights(Conv3D* conv, float learning_rate) {
+    for (int i = 0; i < conv->kernelD * conv->kernelH * conv->kernelW; i++) {
+        conv->weights[i] -= learning_rate * conv->grad_weights[i];
+    }
+    conv->biases[0] -= learning_rate * conv->grad_biases[0];
+}
+
+void conv3d_free(Conv3D* conv) {
+    free(conv->weights);
+    free(conv->biases);
+    free(conv->grad_weights);
+    free(conv->grad_biases);
 }
