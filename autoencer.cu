@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-oid init_encoder(Encoder* encoder, int inputDepth, int inputHeight, int inputWidth, int kernelSize) {
+void init_encoder(Encoder* encoder, int inputDepth, int inputHeight, int inputWidth, int kernelSize) {
     conv3d_init(&encoder->conv1, inputDepth, inputHeight, inputWidth, kernelSize, kernelSize, kernelSize);
     conv3d_init(&encoder->conv2, inputDepth, inputHeight, inputWidth, kernelSize, kernelSize, kernelSize);
     
